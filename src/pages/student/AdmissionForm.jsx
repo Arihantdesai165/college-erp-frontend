@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
     HelpCircle, 
     ExternalLink, 
@@ -37,6 +37,7 @@ const AdmissionForm = () => {
     const [stepTransition, setStepTransition] = useState(false);
     const [fullDetails, setFullDetails] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const {
         stepStatus,
@@ -84,18 +85,7 @@ const AdmissionForm = () => {
                         } catch (e) {}
                     }
 
-                    const draft = localStorage.getItem('admission_form_draft');
-                    if (draft) {
-                        const parsedDraft = JSON.parse(draft);
-                        setFormData({ 
-                            ...flattenedData, 
-                            ...parsedDraft,
-                            id: student.id,
-                            applicationId: student.id
-                        });
-                    } else {
-                        setFormData(flattenedData);
-                    }
+                    setFormData(flattenedData);
                 }
             } catch (error) {
                 console.error("Failed to fetch admission data:", error);
@@ -115,9 +105,9 @@ const AdmissionForm = () => {
             (stepStatus.applicationStatus === 'REGISTERED' || stepStatus.applicationStatus === 'REJECTED');
 
         if (isEditable) {
-            const savedStep = localStorage.getItem('admission_form_step');
-            if (savedStep && parseInt(savedStep) >= 1) {
-                const target = parseInt(savedStep);
+            const routerTargetStep = location.state?.targetStep;
+            if (routerTargetStep && parseInt(routerTargetStep) >= 1) {
+                const target = parseInt(routerTargetStep);
                 if (isStepAccessible(target)) {
                     setCurrentStep(target);
                 } else {
@@ -129,16 +119,7 @@ const AdmissionForm = () => {
         }
     }, [statusLoading, stepStatus, formData.id, isStepAccessible]);
 
-    // Save draft to localStorage 
-    useEffect(() => {
-        const isEditable = !formLoading && stepStatus && 
-            (stepStatus.applicationStatus === 'REGISTERED' || stepStatus.applicationStatus === 'REJECTED');
-
-        if (isEditable) {
-            localStorage.setItem('admission_form_draft', JSON.stringify(formData));
-            localStorage.setItem('admission_form_step', currentStep.toString());
-        }
-    }, [formData, currentStep, formLoading, stepStatus]);
+    // Removed local storage draft saving useEffect
 
     const handleNext = async () => {
         setStepTransition(true);

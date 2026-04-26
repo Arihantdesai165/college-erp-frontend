@@ -119,8 +119,7 @@ const StudentDashboard = () => {
             return;
         }
 
-        localStorage.setItem('admission_form_step', step.targetStep.toString());
-        navigate('/student/application');
+        navigate('/student/application', { state: { targetStep: step.targetStep } });
     };
 
     return (
