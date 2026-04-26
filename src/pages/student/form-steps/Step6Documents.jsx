@@ -31,9 +31,10 @@ const Step6Documents = ({ onNext, onPrev, data }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const isPhotoPresent = files.photo || data?.photo;
-        const isSignaturePresent = files.signature || data?.signature;
-        const isSslcPresent = files.sslcMarkscard || data?.sslcMarkscard;
+        const getDocUrl = (val) => val && (typeof val === 'object' ? val.url : val);
+        const isPhotoPresent = files.photo || getDocUrl(data?.photo);
+        const isSignaturePresent = files.signature || getDocUrl(data?.signature);
+        const isSslcPresent = files.sslcMarkscard || getDocUrl(data?.sslcMarkscard);
 
         if (!isPhotoPresent || !isSignaturePresent || !isSslcPresent) {
             toast.error('Photo, Signature, and SSLC marks card are required');
@@ -82,7 +83,9 @@ const Step6Documents = ({ onNext, onPrev, data }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {DOCS.map(doc => {
                     const isFileSelected = !!files[doc.name];
-                    const isFileInDb = !!data?.[doc.name];
+                    const dbVal = data?.[doc.name];
+                    // Handle both JSON { url, fileType } and legacy string
+                    const isFileInDb = !!(dbVal && (typeof dbVal === 'object' ? dbVal.url : dbVal));
                     const isComplete = isFileSelected || isFileInDb;
                     const isRequired = ['photo', 'signature', 'sslcMarkscard'].includes(doc.name);
 

@@ -3,6 +3,51 @@ import api from '../../../api/axios';
 import { Loader2, ChevronLeft, ChevronRight, Home, MapPin, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const districtTalukMap = {
+    Belagavi: ["Athani", "Bailhongal", "Belagavi", "Chikodi", "Gokak", "Hukkeri", "Khanapur", "Kagawad", "Mudhol", "Nippani", "Kittur", "Raybag", "Ramdurg", "Saundatti"],
+    Bagalkot: ["Badami", "Bagalkot", "Bilagi", "Rabkavi-Banahatti", "Hungund", "Ilkal", "Jamkhandi", "Mudhol"],
+    Dharwad: ["Annigeri", "Dharwad", "Hubballi", "Hubballi City", "Kalghatgi", "Kundgol", "Navalgund"],
+    Gadag: ["Gadag", "Gajendragad", "Lakshmeshwar", "Mundargi", "Nargund", "Ron", "Shirhatti"],
+    Haveri: ["Byadgi", "Hangal", "Haveri", "Hirekerur", "Ranebennur", "Savanur", "Shiggaon", "Rattihalli"],
+    UttaraKannada: ["Ankola", "Bhatkal", "Haliyal", "Honnavar", "Karwar", "Kumta", "Mundgod", "Siddapur", "Sirsi", "Yellapur"],
+    Vijayapura: ["Basavana Bagewadi", "Indi", "Muddebihal", "Sindagi", "Vijayapura", "Babaleshwar", "Talikota", "Devara Hippargi", "Kolhar", "Chadchan", "Tikota"],
+
+    BengaluruUrban: ["Anekal", "Bangalore East", "Bangalore North", "Bangalore South", "Yelahanka"],
+    BengaluruRural: ["Devanahalli", "Doddaballapura", "Hoskote", "Nelamangala"],
+    Chikkaballapura: ["Bagepalli", "Chikkaballapura", "Chintamani", "Gauribidanur", "Gudibanda", "Sidlaghatta"],
+    Chitradurga: ["Challakere", "Chitradurga", "Hiriyur", "Hosadurga", "Holalkere", "Molakalmuru"],
+    Kolar: ["Bangarpet", "Kolar", "Malur", "Mulbagal", "Srinivaspur"],
+    Ramanagara: ["Channapatna", "Kanakapura", "Magadi", "Ramanagara"],
+    Tumakuru: ["Chikkanayakanahalli", "Gubbi", "Koratagere", "Kunigal", "Madhugiri", "Pavagada", "Sira", "Tiptur", "Tumakuru", "Turuvekere"],
+    Shivamogga: ["Bhadravati", "Hosanagara", "Sagara", "Shikaripura", "Shivamogga", "Soraba", "Thirthahalli"],
+    Davanagere: ["Channagiri", "Davanagere", "Harihar", "Honnali", "Jagalur", "Nyamathi"],
+
+    Mysuru: ["Hunsur", "K R Nagar", "Mysuru", "Nanjangud", "Piriyapatna", "Heggadadevana Kote", "T Narasipura", "Saraguru"],
+    Chamarajanagar: ["Chamarajanagar", "Gundlupet", "Kollegal", "Yelandur", "Hanur"],
+    Chikkamagaluru: ["Chikkamagaluru", "Koppa", "Mudigere", "Narasimharajapura", "Sringeri", "Tarikere", "Kadur"],
+    DakshinaKannada: ["Bantwal", "Mangaluru", "Moodabidri", "Puttur", "Sullia", "Kadaba", "Belthangady"],
+    Hassan: ["Alur", "Arkalgud", "Arsikere", "Belur", "Channarayapatna", "Hassan", "Holenarasipura", "Sakleshpur"],
+    Kodagu: ["Madikeri", "Somwarpet", "Virajpet", "Ponnampet", "Kushalnagar"],
+    Mandya: ["Krishnarajpet", "Maddur", "Malavalli", "Mandya", "Nagamangala", "Pandavapura", "Srirangapatna"],
+    Udupi: ["Udupi", "Karkala", "Kundapura", "Brahmavara", "Byndoor", "Hebri", "Kaup"],
+
+    Ballari: ["Ballari", "Kurugodu", "Siraguppa", "Kampli", "Sandur"],
+    Bidar: ["Aurad", "Basavakalyan", "Bhalki", "Bidar", "Bidar South", "Humnabad", "Kamalnagar", "Chitguppa"],
+    Kalaburagi: ["Afzalpur", "Aland", "Chincholi", "Chittapur", "Kalaburagi", "Kalaburagi South", "Jewargi", "Sedam", "Shahabad", "Yedrami", "Kamalapur"],
+    Koppal: ["Gangavathi", "Koppal", "Kushtagi", "Yelburga", "Kanakagiri", "Karatagi", "Kuknoor"],
+    Raichur: ["Devadurga", "Manvi", "Raichur", "Sindhanur", "Sirwar", "Maski", "Lingsugur"],
+    Yadgir: ["Gurmitkal", "Shahpur", "Shorapur", "Vadagera", "Yadgir", "Hunasagi"],
+    Vijayanagara: ["Harapanahalli", "Hoovina Hadagali", "Hagaribommanahalli", "Hospet", "Kudligi", "Kotturu"]
+};
+
+// Display-friendly names for districts
+const districtDisplayNames = {
+    UttaraKannada: "Uttara Kannada",
+    BengaluruUrban: "Bengaluru Urban",
+    BengaluruRural: "Bengaluru Rural",
+    DakshinaKannada: "Dakshina Kannada",
+};
+
 const Step4Address = ({ onNext, onPrev, data, updateData }) => {
     const [loading, setLoading] = useState(false);
     const [sameAsCurrent, setSameAsCurrent] = useState(false);
@@ -22,6 +67,32 @@ const Step4Address = ({ onNext, onPrev, data, updateData }) => {
         };
         fetchDistricts();
     }, []);
+
+    // Get the district name (key in districtTalukMap) from the selected DistrictId
+    const getDistrictKeyFromId = (districtId) => {
+        const district = districts.find(d => String(d.id) === String(districtId));
+        if (!district) return null;
+        // Try to match district name to a key in districtTalukMap
+        // First try exact match with key
+        if (districtTalukMap[district.name]) return district.name;
+        // Try matching display names
+        for (const [key, displayName] of Object.entries(districtDisplayNames)) {
+            if (displayName === district.name) return key;
+        }
+        // Try matching by removing spaces
+        for (const key of Object.keys(districtTalukMap)) {
+            if (key.toLowerCase().replace(/\s/g, '') === district.name.toLowerCase().replace(/\s/g, '')) return key;
+        }
+        return null;
+    };
+
+    // Get taluks for current address district
+    const currentDistrictKey = getDistrictKeyFromId(data.DistrictId);
+    const currentTaluks = currentDistrictKey ? districtTalukMap[currentDistrictKey] || [] : [];
+
+    // Get taluks for permanent address district
+    const permanentDistrictKey = getDistrictKeyFromId(data.permanentDistrictId);
+    const permanentTaluks = permanentDistrictKey ? districtTalukMap[permanentDistrictKey] || [] : [];
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -60,7 +131,15 @@ const Step4Address = ({ onNext, onPrev, data, updateData }) => {
     };
 
     const handleChange = (e) => {
-        updateData({ [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        // When district changes, reset the corresponding taluk
+        if (name === 'DistrictId') {
+            updateData({ [name]: value, Taluk: '' });
+        } else if (name === 'permanentDistrictId') {
+            updateData({ [name]: value, permanentTaluk: '' });
+        } else {
+            updateData({ [name]: value });
+        }
     };
 
     return (
@@ -87,15 +166,29 @@ const Step4Address = ({ onNext, onPrev, data, updateData }) => {
                         <input required type="text" name="City" className="input-premium h-11" value={data.City || ''} onChange={handleChange} placeholder="e.g. Bangalore" />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-slate-700">Taluk <span className="text-red-500">*</span></label>
-                        <input required type="text" name="Taluk" className="input-premium h-11" value={data.Taluk || ''} onChange={handleChange} placeholder="e.g. Bangalore South" />
-                    </div>
-                    <div className="space-y-1.5">
                         <label className="text-sm font-medium text-slate-700">District <span className="text-red-500">*</span></label>
                         <select required name="DistrictId" className="input-premium h-11" value={data.DistrictId || ''} onChange={handleChange}>
                             <option value="" disabled>Select District...</option>
                             {districts.map(district => (
                                 <option key={district.id} value={district.id}>{district.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-slate-700">Taluk <span className="text-red-500">*</span></label>
+                        <select
+                            required
+                            name="Taluk"
+                            className="input-premium h-11"
+                            value={data.Taluk || ''}
+                            onChange={handleChange}
+                            disabled={!data.DistrictId || currentTaluks.length === 0}
+                        >
+                            <option value="" disabled>
+                                {!data.DistrictId ? 'Select District first...' : currentTaluks.length === 0 ? 'No taluks available' : 'Select Taluk...'}
+                            </option>
+                            {currentTaluks.map(taluk => (
+                                <option key={taluk} value={taluk}>{taluk}</option>
                             ))}
                         </select>
                     </div>
@@ -141,15 +234,29 @@ const Step4Address = ({ onNext, onPrev, data, updateData }) => {
                             <input required type="text" name="permanentCity" className="input-premium h-11" value={data.permanentCity || ''} onChange={handleChange} placeholder="e.g. Bangalore" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-sm font-medium text-slate-700">Taluk <span className="text-red-500">*</span></label>
-                            <input required type="text" name="permanentTaluk" className="input-premium h-11" value={data.permanentTaluk || ''} onChange={handleChange} placeholder="e.g. Bangalore South" />
-                        </div>
-                        <div className="space-y-1.5">
                             <label className="text-sm font-medium text-slate-700">District <span className="text-red-500">*</span></label>
                             <select required name="permanentDistrictId" className="input-premium h-11" value={data.permanentDistrictId || ''} onChange={handleChange}>
                                 <option value="" disabled>Select District...</option>
                                 {districts.map(district => (
                                     <option key={district.id} value={district.id}>{district.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-slate-700">Taluk <span className="text-red-500">*</span></label>
+                            <select
+                                required
+                                name="permanentTaluk"
+                                className="input-premium h-11"
+                                value={data.permanentTaluk || ''}
+                                onChange={handleChange}
+                                disabled={!data.permanentDistrictId || permanentTaluks.length === 0}
+                            >
+                                <option value="" disabled>
+                                    {!data.permanentDistrictId ? 'Select District first...' : permanentTaluks.length === 0 ? 'No taluks available' : 'Select Taluk...'}
+                                </option>
+                                {permanentTaluks.map(taluk => (
+                                    <option key={taluk} value={taluk}>{taluk}</option>
                                 ))}
                             </select>
                         </div>

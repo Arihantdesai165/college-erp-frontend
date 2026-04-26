@@ -67,7 +67,9 @@ const AdmissionForm = () => {
                         ...student.studentparentdetails,
                         ...student.studentaddress,
                         ...student.studentacademicdetails,
-                        ...student.studentdocuments
+                        ...student.studentdocuments,
+                        id: student.id,
+                        applicationId: student.id
                     };
                     
                     if (flattenedData.dateOfBirth) {
@@ -85,7 +87,12 @@ const AdmissionForm = () => {
                     const draft = localStorage.getItem('admission_form_draft');
                     if (draft) {
                         const parsedDraft = JSON.parse(draft);
-                        setFormData({ ...flattenedData, ...parsedDraft });
+                        setFormData({ 
+                            ...flattenedData, 
+                            ...parsedDraft,
+                            id: student.id,
+                            applicationId: student.id
+                        });
                     } else {
                         setFormData(flattenedData);
                     }
@@ -180,11 +187,16 @@ const AdmissionForm = () => {
     };
 
     const renderStep = () => {
+        const isEdit = formData.id != null;
+        const applicationId = formData.id;
+
         const stepProps = {
             onNext: handleNext,
             onPrev: handlePrev,
             data: formData,
             updateData: updateFormData,
+            isEdit,
+            applicationId,
         };
 
         switch (currentStep) {

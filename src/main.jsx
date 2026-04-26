@@ -5,6 +5,10 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import App from './App.jsx';
 import './index.css';
+import { registerSW } from 'virtual:pwa-register';
+
+// Register service worker
+registerSW({ immediate: true });
 
 console.log("MAIN.JSX: IMPORTS COMPLETED");
 

@@ -121,14 +121,14 @@ const StudentList = () => {
                     <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Search</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400">
-                            <Search size={14} />
+                            <Search size={16} />
                         </div>
                         <input
                             type="text"
                             placeholder="Name, email, ID..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="input-premium pl-9 h-9 w-full text-sm"
+                            className="input-premium pl-10 h-9 w-full text-sm"
                         />
                     </div>
                 </div>
@@ -138,17 +138,20 @@ const StudentList = () => {
                     <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Status</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400">
-                            <Filter size={14} />
+                            <Filter size={16} />
                         </div>
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="input-premium pl-9 h-9 w-full text-sm appearance-none bg-white cursor-pointer"
+                            className="input-premium pl-10 h-9 w-full text-sm appearance-none bg-white cursor-pointer"
                         >
                             {STATUS_OPTIONS.map(opt => (
                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
                             ))}
                         </select>
+                        <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+                            <Filter size={12} className="opacity-50" />
+                        </div>
                     </div>
                 </div>
 
@@ -172,13 +175,13 @@ const StudentList = () => {
                     <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">From</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400">
-                            <Calendar size={12} />
+                            <Calendar size={16} />
                         </div>
                         <input
                             type="date"
                             value={dateFrom}
                             onChange={(e) => setDateFrom(e.target.value)}
-                            className="input-premium pl-9 h-9 w-full text-sm"
+                            className="input-premium pl-10 h-9 w-full text-sm"
                         />
                     </div>
                 </div>
@@ -188,13 +191,13 @@ const StudentList = () => {
                     <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">To</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400">
-                            <Calendar size={12} />
+                            <Calendar size={16} />
                         </div>
                         <input
                             type="date"
                             value={dateTo}
                             onChange={(e) => setDateTo(e.target.value)}
-                            className="input-premium pl-9 h-9 w-full text-sm"
+                            className="input-premium pl-10 h-9 w-full text-sm"
                         />
                     </div>
                 </div>

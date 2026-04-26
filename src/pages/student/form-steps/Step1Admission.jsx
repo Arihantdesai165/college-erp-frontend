@@ -3,7 +3,7 @@ import api from '../../../api/axios';
 import { Loader2, ChevronRight, CheckCircle2, XCircle, Fingerprint, Info } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const Step1Admission = ({ onNext, data, updateData }) => {
+const Step1Admission = ({ onNext, data, updateData, isEdit, applicationId }) => {
     const [branches, setBranches] = useState([]);
     const [loading, setLoading] = useState(false);
     
@@ -42,7 +42,7 @@ const Step1Admission = ({ onNext, data, updateData }) => {
             setAadhaarError('');
 
             try {
-                const res = await api.post('/student/check-aadhaar', { aadhaar: val });
+                const res = await api.post('/student/check-aadhaar', { aadhaar: val, applicationId });
                 if (res.data.exists) {
                     setAadhaarError('This Aadhaar is already registered with another application.');
                 } else {
@@ -76,7 +76,8 @@ const Step1Admission = ({ onNext, data, updateData }) => {
             try {
                 const res = await api.post('/student/check-cet', { 
                     cetNumber: val,
-                    type: type
+                    type: type,
+                    applicationId
                 });
                 if (res.data.exists) {
                     setCetError(`This ${type} registration number is already in use.`);
@@ -117,10 +118,18 @@ const Step1Admission = ({ onNext, data, updateData }) => {
                 dcetNumber: data.dcetNumber
             };
 
-            const res = await api.post('/student/create', payload);
-            if (res.data.success) {
-                toast.success('Admission info saved!');
-                onNext();
+            if (isEdit) {
+                const res = await api.put(`/student/update/${applicationId}`, payload);
+                if (res.data.success) {
+                    toast.success('Admission info updated!');
+                    onNext();
+                }
+            } else {
+                const res = await api.post('/student/create', payload);
+                if (res.data.success) {
+                    toast.success('Admission info saved!');
+                    onNext();
+                }
             }
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to save admission info');
@@ -218,7 +227,7 @@ const Step1Admission = ({ onNext, data, updateData }) => {
                                 className={`input-premium h-11 uppercase pr-10 ${cetError ? 'border-red-500' : ''}`}
                                 value={data.cetNumber || ''}
                                 onChange={(e) => updateData({ cetNumber: e.target.value.toUpperCase() })}
-                                placeholder="e.g. AB123"
+                                placeholder="e.g. 26QC001"
                             />
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
                                 {isCheckingCet && <Loader2 size={18} className="animate-spin text-slate-400" />}
@@ -241,7 +250,7 @@ const Step1Admission = ({ onNext, data, updateData }) => {
                                 className={`input-premium h-11 uppercase pr-10 ${cetError ? 'border-red-500' : ''}`}
                                 value={data.dcetNumber || ''}
                                 onChange={(e) => updateData({ dcetNumber: e.target.value.toUpperCase() })}
-                                placeholder="e.g. DC123"
+                                placeholder="e.g. D1457"
                             />
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
                                 {isCheckingCet && <Loader2 size={18} className="animate-spin text-slate-400" />}

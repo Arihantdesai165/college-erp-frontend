@@ -197,6 +197,13 @@ const StudentDetail = () => {
         rejectedAt: student.rejectedAt
     };
 
+    // Helper to check if a doc value has content
+    const hasDoc = (val) => {
+        if (!val) return false;
+        if (typeof val === 'object') return !!val.url;
+        return !!val;
+    };
+
     const documents = [
         { label: "Photo", val: student.studentdocuments?.photo },
         { label: "Signature", val: student.studentdocuments?.signature },
@@ -471,7 +478,7 @@ const StudentDetail = () => {
 
                             {/* Document list with preview */}
                             <div className="space-y-2">
-                                {documents.map(doc => doc.val && (
+                                {documents.map(doc => hasDoc(doc.val) && (
                                     <div key={doc.label} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 hover:bg-white hover:border-primary-200 transition-colors border border-transparent">
                                         <span className="text-sm font-medium text-slate-800">{doc.label}</span>
                                         <button

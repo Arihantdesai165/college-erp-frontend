@@ -25,7 +25,7 @@ const AuthLayout = () => {
                     <div className="text-primary-600">
                         <GraduationCap size={32} />
                     </div>
-                    <h2 className="text-slate-900 text-xl font-bold tracking-tight">BGS CET ERP Portal</h2>
+                    <h2 className="text-slate-900 text-xl font-bold tracking-tight">JCER ERP Portal</h2>
                 </div>
                 <div className="flex items-center gap-4">
                     <button className="hidden sm:flex text-slate-600 text-sm font-medium hover:text-primary-600 transition-colors">Admission Guide</button>

@@ -221,15 +221,18 @@ const Step7Review = ({ onPrev, readOnly = false, details: externalDetails = null
                     <div className="flex items-center gap-5 bg-white/5 backdrop-blur-sm p-4 rounded-2xl border border-white/10">
                         <div className="relative group">
                             <div className="size-20 rounded-full border-4 border-white/20 overflow-hidden bg-white/10 flex items-center justify-center transition-all duration-500 group-hover:border-primary-400 shadow-xl">
-                                {details.studentdocuments?.photo ? (
-                                    <img
-                                        src={`http://localhost:5000/uploads/${details.studentdocuments.photo}`}
-                                        alt="Profile"
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <User size={32} className="text-white/40" />
-                                )}
+                                {(() => {
+                                    const photoVal = details.studentdocuments?.photo;
+                                    const photoUrl = photoVal ? (typeof photoVal === 'object' ? photoVal.url : photoVal) : null;
+                                    if (photoUrl) {
+                                        return <img
+                                            src={photoUrl.startsWith('http') ? photoUrl : `${import.meta.env.VITE_API_URL}/uploads/${photoUrl}`}
+                                            alt="Profile"
+                                            className="w-full h-full object-cover"
+                                        />;
+                                    }
+                                    return <User size={32} className="text-white/40" />;
+                                })()}
                             </div>
                             <div className="absolute -bottom-1 -right-1 bg-primary-500 text-white p-1.5 rounded-full shadow-lg">
                                 <Camera size={12} />
@@ -319,11 +322,11 @@ const Step7Review = ({ onPrev, readOnly = false, details: externalDetails = null
 
                 {/* Documents */}
                 <ReviewSection icon={FileText} title="Attached Documents" step={6}>
-                    <DataItem label="Photo" value={details.studentdocuments?.photo ? '✅ Uploaded' : '❌ Missing'} />
-                    <DataItem label="Signature" value={details.studentdocuments?.signature ? '✅ Uploaded' : '❌ Missing'} />
-                    <DataItem label="SSLC Marks Card" value={details.studentdocuments?.sslcMarkscard ? '✅ Uploaded' : '❌ Missing'} />
-                    <DataItem label="PUC Marks Card" value={details.studentdocuments?.pucMarkscard ? '✅ Uploaded' : '❌ Missing'} />
-                    <DataItem label="Study Certificate" value={details.studentdocuments?.studyCertificate ? '✅ Uploaded' : '❌ Missing'} />
+                    <DataItem label="Photo" value={details.studentdocuments?.photo && (typeof details.studentdocuments.photo === 'object' ? details.studentdocuments.photo.url : details.studentdocuments.photo) ? '✅ Uploaded' : '❌ Missing'} />
+                    <DataItem label="Signature" value={details.studentdocuments?.signature && (typeof details.studentdocuments.signature === 'object' ? details.studentdocuments.signature.url : details.studentdocuments.signature) ? '✅ Uploaded' : '❌ Missing'} />
+                    <DataItem label="SSLC Marks Card" value={details.studentdocuments?.sslcMarkscard && (typeof details.studentdocuments.sslcMarkscard === 'object' ? details.studentdocuments.sslcMarkscard.url : details.studentdocuments.sslcMarkscard) ? '✅ Uploaded' : '❌ Missing'} />
+                    <DataItem label="PUC Marks Card" value={details.studentdocuments?.pucMarkscard && (typeof details.studentdocuments.pucMarkscard === 'object' ? details.studentdocuments.pucMarkscard.url : details.studentdocuments.pucMarkscard) ? '✅ Uploaded' : '❌ Missing'} />
+                    <DataItem label="Study Certificate" value={details.studentdocuments?.studyCertificate && (typeof details.studentdocuments.studyCertificate === 'object' ? details.studentdocuments.studyCertificate.url : details.studentdocuments.studyCertificate) ? '✅ Uploaded' : '❌ Missing'} />
                 </ReviewSection>
             </div>
 

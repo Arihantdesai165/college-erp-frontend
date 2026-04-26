@@ -100,7 +100,12 @@ const Step2Personal = ({ onNext, onPrev, data, updateData }) => {
 
                 <div className="space-y-1.5">
                     <label className="text-sm font-medium text-slate-700">Category <span className="text-red-500">*</span></label>
-                    <input required type="text" name="category" placeholder="e.g. GM, OBC, SC, ST" className="input-premium h-11" value={data.category || ''} onChange={handleChange} />
+                    <select required name="category" className="input-premium h-11" value={data.category || ''} onChange={handleChange}>
+                        <option value="" disabled>Select Category</option>
+                        {['GM', 'OBC', 'SC', 'ST', '2A', '2B', '3A', '3B', 'Category 1', 'Others'].map(c => (
+                            <option key={c} value={c}>{c}</option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="space-y-1.5">
