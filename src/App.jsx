@@ -44,6 +44,7 @@ function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/student/dashboard" element={<StudentDashboard />} />
           <Route path="/student/application" element={<AdmissionForm />} />
+          <Route path="/student/application/edit" element={<AdmissionForm />} />
           <Route path="/student/*" element={<Placeholder name="Student Module" />} />
         </Route>
       </Route>

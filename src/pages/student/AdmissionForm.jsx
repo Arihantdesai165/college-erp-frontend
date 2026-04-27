@@ -97,27 +97,29 @@ const AdmissionForm = () => {
         if (!statusLoading) {
             fetchData();
         }
-    }, [statusLoading, stepStatus?.applicationStatus]);
+    }, [statusLoading, stepStatus?.applicationStatus, location.pathname]);
 
     // Set initial step based on status or saved step
     useEffect(() => {
         const isEditable = !statusLoading && stepStatus && 
-            (stepStatus.applicationStatus === 'REGISTERED' || stepStatus.applicationStatus === 'REJECTED');
+            (stepStatus.applicationStatus === 'REGISTERED' || stepStatus.applicationStatus === 'REJECTED' || stepStatus.applicationStatus === 'CORRECTION_REQUIRED');
 
-        if (isEditable) {
+        if (isEditable || location.pathname.endsWith('/edit')) {
             const routerTargetStep = location.state?.targetStep;
             if (routerTargetStep && parseInt(routerTargetStep) >= 1) {
                 const target = parseInt(routerTargetStep);
                 if (isStepAccessible(target)) {
                     setCurrentStep(target);
                 } else {
-                    setCurrentStep(stepStatus.activeStepIndex || 1);
+                    setCurrentStep(stepStatus?.activeStepIndex || 1);
                 }
+            } else if (location.pathname.endsWith('/edit')) {
+                setCurrentStep(1); // Force to step 1 when entering edit mode if no target step specified
             } else if (formData.id) {
-                setCurrentStep(stepStatus.activeStepIndex || 2);
+                setCurrentStep(stepStatus?.activeStepIndex || 2);
             }
         }
-    }, [statusLoading, stepStatus, formData.id, isStepAccessible]);
+    }, [statusLoading, stepStatus, formData.id, isStepAccessible, location]);
 
     // Removed local storage draft saving useEffect
 
@@ -192,10 +194,11 @@ const AdmissionForm = () => {
         }
     };
 
+    const isEditRoute = location.pathname.endsWith('/edit');
     const applicationStatus = stepStatus?.applicationStatus;
     const isSubmitted = applicationStatus && 
         applicationStatus !== 'REGISTERED' && 
-        applicationStatus !== 'REJECTED';
+        !isEditRoute;
 
     if (statusLoading || (isSubmitted && !fullDetails)) {
         return (

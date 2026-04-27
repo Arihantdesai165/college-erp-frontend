@@ -91,9 +91,7 @@ const Step7Review = ({ onPrev, readOnly = false, details: externalDetails = null
     };
 
     const handleEdit = (stepNumber) => {
-        localStorage.setItem('admission_form_step', stepNumber.toString());
-        // Forcing a small delay to ensure local storage is set before re-render/logic
-        setTimeout(() => window.location.reload(), 50);
+        navigate('/student/application/edit', { state: { targetStep: stepNumber } });
     };
 
     if (loading) {

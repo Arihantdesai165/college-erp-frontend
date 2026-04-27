@@ -461,7 +461,7 @@ const SubmittedDashboard = ({ stepStatus, applicationStatus, timeline, navigate 
 
                     {isRejected && (
                         <button
-                            onClick={() => navigate('/student/application')}
+                            onClick={() => navigate('/student/application/edit')}
                             className="w-full bg-red-600 text-white rounded-2xl p-5 flex items-center gap-4 hover:bg-red-700 shadow-lg shadow-red-600/20 transition-all group"
                         >
                             <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
